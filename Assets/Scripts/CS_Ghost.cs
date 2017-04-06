@@ -54,6 +54,8 @@ public class CS_Ghost : MonoBehaviour {
 				myNextWayPoint = (myNextWayPoint + 1) % myWayPoints.Count;
 			}
 		}
+
+		transform.position = new Vector3 (transform.position.x, transform.position.y, 1);
 	}
 
 	private void UpdateFind () {
