@@ -55,7 +55,7 @@ public class CS_Player : MonoBehaviour {
 			if (hit.collider.tag == "Wall") {
 				Debug.Log ("wall");
 				Invoke ("PlaySoundWall", hit.distance / mySoundSpeed); 
-				mySFXPitch = CS_AudioManager.Instance.RemapRange (myVisionDistance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y);
+				mySFXPitch = CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y);
 			}
 		}
 	}
