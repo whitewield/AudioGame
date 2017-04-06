@@ -68,7 +68,7 @@ public class CS_AudioManager : MonoBehaviour {
 
 	}
 
-	public void PlaySFX (AudioClip g_SFX, Vector3 g_position = default(Vector3), Transform g_parent = null, float g_volum = 1) {
+	public void PlaySFX (AudioClip g_SFX, Vector3 g_position = default(Vector3), Transform g_parent = null, float g_volum = 1, float g_pitch = 1) {
 		if (g_SFX == null) {
 			Debug.LogWarning ("Can not find the sound effect!");
 			return;
@@ -89,6 +89,7 @@ public class CS_AudioManager : MonoBehaviour {
 
 		t_SFXAudioSource.clip = g_SFX;
 		t_SFXAudioSource.volume = g_volum;
+		t_SFXAudioSource.pitch = g_pitch;
 		t_SFXAudioSource.Play ();
 	} 
 
