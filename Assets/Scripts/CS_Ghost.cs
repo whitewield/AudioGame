@@ -17,7 +17,8 @@ public class CS_Ghost : MonoBehaviour {
 	private Status myStatus = Status.Idle;
 	private Vector3 myDirection;
 
-	[SerializeField] Transform[] myWayPoints;
+	[SerializeField] Transform myWayPointsParent;
+	private List<Transform> myWayPoints = new List<Transform> ();
 	[SerializeField] float myArriveDistance = 0.1f;
 	private int myNextWayPoint = 0;
 
@@ -27,6 +28,10 @@ public class CS_Ghost : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CS_AudioManager.Instance.PlaySFX (mySFXTest, Vector3.one);
+
+		for (int i = 0; i < myWayPointsParent.childCount; i++) {
+			myWayPoints.Add (myWayPointsParent.GetChild (i));
+		}
 	}
 	
 	// Update is called once per frame
@@ -46,7 +51,7 @@ public class CS_Ghost : MonoBehaviour {
 			myDirection = (myWayPoints [myNextWayPoint].position - this.transform.position).normalized;
 			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
 			if ((myWayPoints [myNextWayPoint].position - this.transform.position).sqrMagnitude < myArriveDistance) {
-				myNextWayPoint = (myNextWayPoint + 1) % myWayPoints.Length;
+				myNextWayPoint = (myNextWayPoint + 1) % myWayPoints.Count;
 			}
 		}
 	}
