@@ -12,6 +12,10 @@ public class CS_Ghost : MonoBehaviour {
 	private Status myStatus = Status.Idle;
 	private Vector3 myDirection;
 
+	[SerializeField] Transform[] myWayPoints;
+	[SerializeField] float myArriveDistance = 0.1f;
+	private int myNextWayPoint = 0;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -28,6 +32,14 @@ public class CS_Ghost : MonoBehaviour {
 		if (myStatus == Status.Find) {
 			myDirection = (CS_GhostTarget.Instance.transform.position - this.transform.position).normalized;
 			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
+		}
+
+		if (myStatus == Status.Idle) {
+			myDirection = (myWayPoints [myNextWayPoint].position - this.transform.position).normalized;
+			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
+			if ((myWayPoints [myNextWayPoint].position - this.transform.position).sqrMagnitude < myArriveDistance) {
+				myNextWayPoint = (myNextWayPoint + 1) % myWayPoints.Length;
+			}
 		}
 	}
 
