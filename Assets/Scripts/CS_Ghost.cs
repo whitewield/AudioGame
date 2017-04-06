@@ -27,7 +27,7 @@ public class CS_Ghost : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CS_AudioManager.Instance.PlaySFX (mySFXTest, Vector3.one);
+//		CS_AudioManager.Instance.PlaySFX (mySFXTest, Vector3.one);
 
 		for (int i = 0; i < myWayPointsParent.childCount; i++) {
 			myWayPoints.Add (myWayPointsParent.GetChild (i));
@@ -55,7 +55,7 @@ public class CS_Ghost : MonoBehaviour {
 			}
 		}
 
-		transform.position = new Vector3 (transform.position.x, transform.position.y, 1);
+		transform.position = new Vector3 (transform.position.x, 1, transform.position.z);
 	}
 
 	private void UpdateFind () {
