@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class CS_Ghost : MonoBehaviour {
 	enum Status {
@@ -8,9 +9,18 @@ public class CS_Ghost : MonoBehaviour {
 		Find
 	}
 
+	[SerializeField] float mySnapshotTransitionTime = 1.0f;
+	[SerializeField] AudioMixerSnapshot mySnapshotIdle;
+	[SerializeField] AudioMixerSnapshot mySnapshotFind;
+
 	[SerializeField] float myVelocity = 3;
 	private Status myStatus = Status.Idle;
 	private Vector3 myDirection;
+
+	[SerializeField] Transform[] myWayPoints;
+	[SerializeField] float myArriveDistance = 0.1f;
+	private int myNextWayPoint = 0;
+
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +39,14 @@ public class CS_Ghost : MonoBehaviour {
 			myDirection = (CS_GhostTarget.Instance.transform.position - this.transform.position).normalized;
 			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
 		}
+
+		if (myStatus == Status.Idle) {
+			myDirection = (myWayPoints [myNextWayPoint].position - this.transform.position).normalized;
+			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
+			if ((myWayPoints [myNextWayPoint].position - this.transform.position).sqrMagnitude < myArriveDistance) {
+				myNextWayPoint = (myNextWayPoint + 1) % myWayPoints.Length;
+			}
+		}
 	}
 
 	private void UpdateFind () {
@@ -40,8 +58,10 @@ public class CS_Ghost : MonoBehaviour {
 		if (Physics.Raycast (ray, out hit, myVisionDistance))
 		if (hit.collider.tag == "Wall") {
 			myStatus = Status.Idle;
+			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
 		} else {
 			myStatus = Status.Find;
+			mySnapshotFind.TransitionTo (mySnapshotTransitionTime);
 		}
 	}
 }
