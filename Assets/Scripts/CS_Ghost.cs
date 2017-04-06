@@ -21,10 +21,12 @@ public class CS_Ghost : MonoBehaviour {
 	[SerializeField] float myArriveDistance = 0.1f;
 	private int myNextWayPoint = 0;
 
+	[SerializeField] AudioClip mySFXTest;
+
 
 	// Use this for initialization
 	void Start () {
-		
+		CS_AudioManager.Instance.PlaySFX (mySFXTest, Vector3.one);
 	}
 	
 	// Update is called once per frame
@@ -62,6 +64,12 @@ public class CS_Ghost : MonoBehaviour {
 		} else {
 			myStatus = Status.Find;
 			mySnapshotFind.TransitionTo (mySnapshotTransitionTime);
+		}
+	}
+
+	void OnTriggerEnter (Collider g_Collider) {
+		if (g_Collider.tag == "Player") {
+			Debug.Log ("LOSE!");
 		}
 	}
 }
