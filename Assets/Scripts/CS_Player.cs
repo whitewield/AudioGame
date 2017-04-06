@@ -26,6 +26,9 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] AudioClip mySFX_Send;
 	[SerializeField] AudioClip mySFX_Wall;
 	[SerializeField] float mySoundSpeed = 340;
+	[SerializeField] Vector2 mySoundRange = new Vector2 (0, 100);
+	[SerializeField] Vector2 mySFXPitchRange = new Vector2 (1, 1.2f);
+	private float mySFXPitch = 1;
 
 	[SerializeField] AudioSource myAudioSource;
 	[SerializeField] AudioClip myVoice_Ghost;
@@ -44,7 +47,7 @@ public class CS_Player : MonoBehaviour {
 			Debug.Log ("send");
 			CS_AudioManager.Instance.PlaySFX (mySFX_Send, this.transform.position);
 
-			float myVisionDistance = 50;
+			float myVisionDistance = mySoundRange.y;
 			Ray ray = new Ray (this.transform.position, this.transform.forward);
 			RaycastHit hit;
 			int t_layerMask = (int) Mathf.Pow (2, 8); //for the layer you want to do the raycast
@@ -52,17 +55,19 @@ public class CS_Player : MonoBehaviour {
 			if (hit.collider.tag == "Wall") {
 				Debug.Log ("wall");
 				Invoke ("PlaySoundWall", hit.distance / mySoundSpeed); 
+				mySFXPitch = CS_AudioManager.Instance.RemapRange (myVisionDistance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y);
 			}
 		}
 	}
 
 	private void PlaySoundWall() {  
 		Debug.Log ("receive");
-		CS_AudioManager.Instance.PlaySFX (mySFX_Wall, this.transform.position);
+		CS_AudioManager.Instance.PlaySFX (mySFX_Wall, this.transform.position, null, 1, mySFXPitch);
 	}
 
 	public void PlayVoice_Ghost (){
 		if (isVoiceGhostPlayed == false) {
+			Debug.Log ("PlayVoice_Ghost");
 			isVoiceGhostPlayed = true;
 			PlayVoice (myVoice_Ghost);
 		}
