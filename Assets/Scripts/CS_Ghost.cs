@@ -22,7 +22,7 @@ public class CS_Ghost : MonoBehaviour {
 	[SerializeField] float myArriveDistance = 0.1f;
 	private int myNextWayPoint = 0;
 
-	[SerializeField] AudioClip mySFXTest;
+//	[SerializeField] AudioClip mySFX;
 
 
 	// Use this for initialization
@@ -69,6 +69,7 @@ public class CS_Ghost : MonoBehaviour {
 			myStatus = Status.Idle;
 			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
 		} else {
+			CS_Player.Instance.PlayVoice_Ghost ();
 			myStatus = Status.Find;
 			mySnapshotFind.TransitionTo (mySnapshotTransitionTime);
 		}
