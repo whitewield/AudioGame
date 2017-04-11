@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CS_End : MonoBehaviour {
 	[SerializeField] AudioClip mySFX;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -18,7 +19,7 @@ public class CS_End : MonoBehaviour {
 		if (g_Collider.tag == "Player") {
 			Debug.Log ("WIN!");
 			CS_AudioManager.Instance.PlaySFX (mySFX, this.transform.position);
-
+			CS_Ghost.Instance.End ();
 		}
 	}
 }
