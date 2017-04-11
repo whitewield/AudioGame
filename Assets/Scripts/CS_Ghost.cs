@@ -26,13 +26,14 @@ public class CS_Ghost : MonoBehaviour {
 
 	enum Status {
 		Idle,
-		Find
+		Find,
+		End
 	}
 
 	[SerializeField] float mySnapshotTransitionTime = 1.0f;
 	[SerializeField] AudioMixerSnapshot mySnapshotIdle;
 	[SerializeField] AudioMixerSnapshot mySnapshotFind;
-	[SerializeField] AudioMixerSnapshot mySnapshotGone;
+	[SerializeField] AudioMixerSnapshot mySnapshotEnd;
 
 	[SerializeField] float myVelocity = 3;
 	private Status myStatus = Status.Idle;
@@ -42,6 +43,7 @@ public class CS_Ghost : MonoBehaviour {
 	private List<Transform> myWayPoints = new List<Transform> ();
 	[SerializeField] float myArriveDistance = 0.1f;
 	private int myNextWayPoint = 0;
+
 
 //	[SerializeField] AudioClip mySFX;
 
@@ -80,6 +82,9 @@ public class CS_Ghost : MonoBehaviour {
 	}
 
 	private void UpdateFind () {
+		if (myStatus == Status.End)
+			return;
+		
 		float myVisionDistance = 50;
 		Ray ray = new Ray (this.transform.position, CS_GhostTarget.Instance.transform.position - this.transform.position);
 		RaycastHit hit;
@@ -103,6 +108,8 @@ public class CS_Ghost : MonoBehaviour {
 	}
 
 	public void End () {
-		mySnapshotGone.TransitionTo (mySnapshotTransitionTime);
+		Debug.Log ("GhostSoundEnd");
+		myStatus = Status.End;
+		mySnapshotEnd.TransitionTo (mySnapshotTransitionTime);
 	}
 }
