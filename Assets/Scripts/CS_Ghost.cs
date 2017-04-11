@@ -84,20 +84,22 @@ public class CS_Ghost : MonoBehaviour {
 	private void UpdateFind () {
 		if (myStatus == Status.End)
 			return;
+
+		Debug.Log ("UpdateFind");
 		
 		float myVisionDistance = 50;
 		Ray ray = new Ray (this.transform.position, CS_GhostTarget.Instance.transform.position - this.transform.position);
 		RaycastHit hit;
-		//		int t_layerMask = (int) Mathf.Pow (2, 8); //for the layer you want to do the raycast
+		int t_layerMask = (int) Mathf.Pow (2, 8); //for the layer you want to do the raycast
 		//		if (Physics.Raycast (ray, out hit, myVisionDistance, t_layerMask))
-		if (Physics.Raycast (ray, out hit, myVisionDistance))
-		if (hit.collider.tag == "Wall") {
-			myStatus = Status.Idle;
-			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
-		} else {
+		if (Physics.Raycast (ray, out hit, myVisionDistance, t_layerMask))
+		if (hit.collider.tag == "Player") {
 			CS_Player.Instance.PlayVoice_Ghost ();
 			myStatus = Status.Find;
 			mySnapshotFind.TransitionTo (mySnapshotTransitionTime);
+		} else {
+			myStatus = Status.Idle;
+			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
 		}
 	}
 
