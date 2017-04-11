@@ -25,6 +25,7 @@ public class CS_Player : MonoBehaviour {
 
 	[SerializeField] AudioClip mySFX_Send;
 	[SerializeField] AudioClip mySFX_Wall;
+	[SerializeField] AudioClip mySFX_Door;
 	[SerializeField] float mySoundSpeed = 340;
 	[SerializeField] Vector2 mySoundRange = new Vector2 (0, 100);
 	[SerializeField] Vector2 mySFXPitchRange = new Vector2 (1, 1.2f);
@@ -54,15 +55,22 @@ public class CS_Player : MonoBehaviour {
 			if (Physics.Raycast (ray, out hit, myVisionDistance, t_layerMask))
 			if (hit.collider.tag == "Wall") {
 				Debug.Log ("wall");
-				Invoke ("PlaySoundWall", hit.distance / mySoundSpeed); 
-				mySFXPitch = CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y);
+				StartCoroutine (PlaySound (mySFX_Wall, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
+					hit.distance / mySoundSpeed)
+				);
+			} else if (hit.collider.tag == "Door") {
+				Debug.Log ("wall");
+				StartCoroutine (PlaySound (mySFX_Door, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
+					hit.distance / mySoundSpeed)
+				);
 			}
 		}
 	}
 
-	private void PlaySoundWall() {  
+	IEnumerator PlaySound(AudioClip g_AudioClip, float g_pitch, float g_time) {  
+		yield return new WaitForSeconds (g_time);
 		Debug.Log ("receive");
-		CS_AudioManager.Instance.PlaySFX (mySFX_Wall, this.transform.position, null, 1, mySFXPitch);
+		CS_AudioManager.Instance.PlaySFX (g_AudioClip, this.transform.position, null, 1, g_pitch);
 	}
 
 	public void PlayVoice_Ghost (){
