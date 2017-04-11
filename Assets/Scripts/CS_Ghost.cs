@@ -4,6 +4,26 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 public class CS_Ghost : MonoBehaviour {
+
+	private static CS_Ghost instance = null;
+
+	//========================================================================
+	public static CS_Ghost Instance {
+		get { 
+			return instance;
+		}
+	}
+
+	void Awake () {
+		if (instance != null && instance != this) {
+			Destroy(this.gameObject);
+		} else {
+			instance = this;
+		}
+		//		DontDestroyOnLoad(this.gameObject);
+	}
+	//========================================================================
+
 	enum Status {
 		Idle,
 		Find
@@ -12,6 +32,7 @@ public class CS_Ghost : MonoBehaviour {
 	[SerializeField] float mySnapshotTransitionTime = 1.0f;
 	[SerializeField] AudioMixerSnapshot mySnapshotIdle;
 	[SerializeField] AudioMixerSnapshot mySnapshotFind;
+	[SerializeField] AudioMixerSnapshot mySnapshotGone;
 
 	[SerializeField] float myVelocity = 3;
 	private Status myStatus = Status.Idle;
@@ -79,5 +100,9 @@ public class CS_Ghost : MonoBehaviour {
 		if (g_Collider.tag == "Player") {
 			Debug.Log ("LOSE!");
 		}
+	}
+
+	public void End () {
+		mySnapshotGone.TransitionTo (mySnapshotTransitionTime);
 	}
 }
