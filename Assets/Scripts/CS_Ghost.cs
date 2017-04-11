@@ -44,6 +44,8 @@ public class CS_Ghost : MonoBehaviour {
 	[SerializeField] float myArriveDistance = 0.1f;
 	private int myNextWayPoint = 0;
 
+	private Vector3 myFindPoint;
+
 
 //	[SerializeField] AudioClip mySFX;
 
@@ -66,8 +68,12 @@ public class CS_Ghost : MonoBehaviour {
 
 	private void UpdateMove () {
 		if (myStatus == Status.Find) {
-			myDirection = (CS_GhostTarget.Instance.transform.position - this.transform.position).normalized;
+			myDirection = (myFindPoint - this.transform.position).normalized;
 			this.GetComponent<Rigidbody> ().velocity = myDirection * myVelocity;
+			if ((myFindPoint - this.transform.position).sqrMagnitude < myArriveDistance) {
+				myStatus = Status.Idle;
+				mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
+			}
 		}
 
 		if (myStatus == Status.Idle) {
@@ -84,20 +90,23 @@ public class CS_Ghost : MonoBehaviour {
 	private void UpdateFind () {
 		if (myStatus == Status.End)
 			return;
+
+//		Debug.Log ("UpdateFind");
 		
 		float myVisionDistance = 50;
 		Ray ray = new Ray (this.transform.position, CS_GhostTarget.Instance.transform.position - this.transform.position);
 		RaycastHit hit;
-		//		int t_layerMask = (int) Mathf.Pow (2, 8); //for the layer you want to do the raycast
+		int t_layerMask = (int) Mathf.Pow (2, 8); //for the layer you want to do the raycast
 		//		if (Physics.Raycast (ray, out hit, myVisionDistance, t_layerMask))
-		if (Physics.Raycast (ray, out hit, myVisionDistance))
-		if (hit.collider.tag == "Wall") {
-			myStatus = Status.Idle;
-			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
-		} else {
+		if (Physics.Raycast (ray, out hit, myVisionDistance, t_layerMask))
+		if (hit.collider.tag == "Player") {
 			CS_Player.Instance.PlayVoice_Ghost ();
 			myStatus = Status.Find;
+			myFindPoint = hit.collider.transform.position;
 			mySnapshotFind.TransitionTo (mySnapshotTransitionTime);
+		} else {
+//			myStatus = Status.Idle;
+//			mySnapshotIdle.TransitionTo (mySnapshotTransitionTime);
 		}
 	}
 
