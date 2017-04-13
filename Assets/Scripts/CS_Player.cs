@@ -29,7 +29,7 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] float mySoundSpeed = 340;
 	[SerializeField] Vector2 mySoundRange = new Vector2 (0, 100);
 	[SerializeField] Vector2 mySFXPitchRange = new Vector2 (1, 1.2f);
-	private float mySFXPitch = 1;
+//	private float mySFXPitch = 1;
 
 	[SerializeField] AudioSource myAudioSource;
 	[SerializeField] AudioClip myVoice_Ghost;
