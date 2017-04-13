@@ -26,6 +26,7 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] AudioClip mySFX_Send;
 	[SerializeField] AudioClip mySFX_Wall;
 	[SerializeField] AudioClip mySFX_Door;
+	[SerializeField] AudioClip mySFX_Exit;
 	[SerializeField] float mySoundSpeed = 340;
 	[SerializeField] Vector2 mySoundRange = new Vector2 (0, 100);
 	[SerializeField] Vector2 mySFXPitchRange = new Vector2 (1, 1.2f);
@@ -34,6 +35,10 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] AudioSource myAudioSource;
 	[SerializeField] AudioClip myVoice_Ghost;
 	private bool isVoiceGhostPlayed = false;
+	[SerializeField] AudioClip myVoice_Door;
+	private bool isVoiceDoorPlayed = false;
+	[SerializeField] AudioClip myVoice_Exit;
+	private bool isVoiceExitPlayed = false;
 
 
 	// Use this for initialization
@@ -59,8 +64,15 @@ public class CS_Player : MonoBehaviour {
 					hit.distance / mySoundSpeed)
 				);
 			} else if (hit.collider.tag == "Door") {
-				Debug.Log ("wall");
+				Debug.Log ("Door");
+				PlayVoiceOnce (myVoice_Door, isVoiceDoorPlayed);
 				StartCoroutine (PlaySound (mySFX_Door, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
+					hit.distance / mySoundSpeed)
+				);
+			} else if (hit.collider.tag == "Exit") {
+				Debug.Log ("Exit");
+				PlayVoiceOnce (myVoice_Exit, isVoiceExitPlayed);
+				StartCoroutine (PlaySound (mySFX_Exit, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
 					hit.distance / mySoundSpeed)
 				);
 			}
@@ -73,11 +85,15 @@ public class CS_Player : MonoBehaviour {
 		CS_AudioManager.Instance.PlaySFX (g_AudioClip, this.transform.position, null, 1, g_pitch);
 	}
 
-	public void PlayVoice_Ghost (){
-		if (isVoiceGhostPlayed == false) {
+	public void PlayVoice_Ghost () {
+		PlayVoiceOnce (myVoice_Ghost, isVoiceGhostPlayed);
+	}
+
+	public void PlayVoiceOnce (AudioClip g_voice, bool g_isPlayed) {
+		if (g_isPlayed == false) {
 			Debug.Log ("PlayVoice_Ghost");
-			isVoiceGhostPlayed = true;
-			PlayVoice (myVoice_Ghost);
+			g_isPlayed = true;
+			PlayVoice (g_voice);
 		}
 	}
 
