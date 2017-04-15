@@ -65,13 +65,13 @@ public class CS_Player : MonoBehaviour {
 				);
 			} else if (hit.collider.tag == "Door") {
 				Debug.Log ("Door");
-				PlayVoiceOnce (myVoice_Door, isVoiceDoorPlayed);
+				PlayVoiceOnce (myVoice_Door, ref isVoiceDoorPlayed);
 				StartCoroutine (PlaySound (mySFX_Door, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
 					hit.distance / mySoundSpeed)
 				);
 			} else if (hit.collider.tag == "Exit") {
 				Debug.Log ("Exit");
-				PlayVoiceOnce (myVoice_Exit, isVoiceExitPlayed);
+				PlayVoiceOnce (myVoice_Exit, ref isVoiceExitPlayed);
 				StartCoroutine (PlaySound (mySFX_Exit, CS_AudioManager.Instance.RemapRange (hit.distance, mySoundRange.y, mySoundRange.x, mySFXPitchRange.x, mySFXPitchRange.y), 
 					hit.distance / mySoundSpeed)
 				);
@@ -86,10 +86,10 @@ public class CS_Player : MonoBehaviour {
 	}
 
 	public void PlayVoice_Ghost () {
-		PlayVoiceOnce (myVoice_Ghost, isVoiceGhostPlayed);
+		PlayVoiceOnce (myVoice_Ghost, ref isVoiceGhostPlayed);
 	}
 
-	public void PlayVoiceOnce (AudioClip g_voice, bool g_isPlayed) {
+	public void PlayVoiceOnce (AudioClip g_voice, ref bool g_isPlayed) {
 		if (g_isPlayed == false) {
 			Debug.Log ("PlayVoice_Ghost");
 			g_isPlayed = true;
