@@ -40,6 +40,8 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] AudioClip myVoice_Exit;
 	private bool isVoiceExitPlayed = false;
 
+	[SerializeField] float mySpeed = 3;
+	[SerializeField] Transform myCameraTransform;
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +50,20 @@ public class CS_Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		UpdateSend ();
+		UpdateMove ();
+	}
+
+	private void UpdateMove () {
+		if (myCameraTransform == null) {
+			return;
+		}
+		float t_vertical = Input.GetAxis ("Vertical");
+		float t_horizontal = Input.GetAxis ("Horizontal");
+		this.transform.position += (t_vertical * myCameraTransform.forward + t_horizontal * myCameraTransform.right) * mySpeed * Time.deltaTime;
+	}
+
+	private void UpdateSend () {
 		if (Input.GetButtonDown ("Send")) {
 
 			Debug.Log ("send");
