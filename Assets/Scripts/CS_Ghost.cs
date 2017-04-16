@@ -113,6 +113,7 @@ public class CS_Ghost : MonoBehaviour {
 	void OnTriggerEnter (Collider g_Collider) {
 		if (g_Collider.tag == "Player") {
 			Debug.Log ("LOSE!");
+
 		}
 	}
 
