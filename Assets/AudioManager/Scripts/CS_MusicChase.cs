@@ -23,9 +23,9 @@ public class CS_MusicChase : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		distance = (player.transform.position - ghost.transform.position).magnitude; 
+		distance = (player.transform.position - ghost.transform.position).sqrMagnitude; 
 
-		thisSource.volume = CS_AudioManager.Instance.RemapRange (distance, 0f, 50f, 1.0f, 0f);
+		thisSource.volume = CS_AudioManager.Instance.RemapRange (distance, 0f, 250f, 1.0f, 0f);
 		
 	}
 }
