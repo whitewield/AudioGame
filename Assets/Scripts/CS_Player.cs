@@ -32,7 +32,7 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] Vector2 mySFXPitchRange = new Vector2 (1, 1.2f);
 //	private float mySFXPitch = 1;
 
-	[SerializeField] AudioSource myAudioSource;
+	[SerializeField] AudioSource myVoiceAudioSource;
 	[SerializeField] AudioClip myVoice_Ghost;
 	private bool isVoiceGhostPlayed = false;
 	[SerializeField] AudioClip myVoice_Door;
@@ -44,15 +44,71 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] Transform myCameraTransform;
 	[SerializeField] Rigidbody myRigidbody;
 
+	[SerializeField] AudioSource mySFXAudioSource;
+	[SerializeField] float myFoodstepRatio = 0.5f;
+	private float myFoodstepDistance;
+	private float  myFoodstepCycle;
+	private Vector3 myLastPosition;
+	[SerializeField] AudioClip[] mySFX_Footsteps;
+	private List<int> mySFX_Footsteps_List = new List<int> ();
+	private int mySFX_Footsteps_Last = 1;
+
+	[SerializeField] AudioClip mySFX_HitWall;
+
 	// Use this for initialization
 	void Start () {
-		
+		myLastPosition = this.transform.position;
+		myFoodstepDistance = mySpeed * myFoodstepRatio;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		UpdateSend ();
 		UpdateMove ();
+	}
+
+	void LateUpdate () {
+		UpdateStep ();
+	}
+
+	private void UpdateStep () {
+		if (mySFX_Footsteps_List.Count == 0) {
+			List<int> t_list = new List<int> ();
+			for (int i = 0; i < mySFX_Footsteps.Length; i++) {
+				t_list.Add (i);
+			}
+
+			while (t_list.Count > 0) {
+				int t_num = Random.Range (0, t_list.Count);
+				mySFX_Footsteps_List.Add (t_list [t_num]);
+				t_list.RemoveAt (t_num);
+			}
+
+			if (mySFX_Footsteps_List [0] == mySFX_Footsteps_Last) {
+				mySFX_Footsteps_List [0] = mySFX_Footsteps_List [1];
+				mySFX_Footsteps_List [1] = mySFX_Footsteps_Last;
+			}
+
+			mySFX_Footsteps_Last = mySFX_Footsteps_List [mySFX_Footsteps_List.Count - 1];
+		}
+
+		float t_distance = Vector3.Distance (this.transform.position, myLastPosition);
+		myFoodstepCycle += t_distance;
+//		Debug.Log (myFoodstepCycle);
+		if (myFoodstepCycle > myFoodstepDistance) {
+			myFoodstepCycle -= myFoodstepDistance;
+
+			//Play the sound
+
+			Debug.Log (mySFX_Footsteps_List [0]);
+			mySFXAudioSource.Stop ();
+			mySFXAudioSource.clip = mySFX_Footsteps [mySFX_Footsteps_List [0]];
+			mySFX_Footsteps_List.RemoveAt (0);
+			mySFXAudioSource.Play ();
+
+		}
+
+		myLastPosition = this.transform.position;
 	}
 
 	private void UpdateMove () {
@@ -74,13 +130,15 @@ public class CS_Player : MonoBehaviour {
 //		this.transform.position += (t_vertical * myCameraTransform.forward + t_horizontal * myCameraTransform.right) * mySpeed * Time.deltaTime;
 	
 		if (Input.GetButton ("Move")) {
-//		if (Input.GetButton ("Move")) {
+			Debug.Log ("Move");
 			Vector3 t_direction = myCameraTransform.forward;
 			t_direction = new Vector3 (t_direction.x, 0, t_direction.z).normalized;
 //			myRigidbody.velocity = new Vector3 (t_direction.x, myRigidbody.velocity.y, t_direction.z) * mySpeed * Time.deltaTime;
 			this.transform.position += t_direction * mySpeed * Time.deltaTime;
 
 		}
+
+//		myRigidbody.velocity = Vector3.zero;
 	}
 
 	private void UpdateSend () {
@@ -140,7 +198,20 @@ public class CS_Player : MonoBehaviour {
 			return;
 		}
 
-		myAudioSource.clip = g_SFX;
-		myAudioSource.Play ();
+		myVoiceAudioSource.clip = g_SFX;
+		myVoiceAudioSource.Play ();
 	} 
+
+	public void HitWall () {
+		mySFXAudioSource.Stop ();
+		mySFXAudioSource.clip = mySFX_HitWall;
+		mySFXAudioSource.Play ();
+	}
+
+	void OnCollisionEnter (Collision collision) {
+		Debug.Log ("Hit");
+		if (collision.gameObject.tag == "Wall") {
+			HitWall ();
+		}
+	}
 }
