@@ -53,8 +53,14 @@ public class CS_Player : MonoBehaviour {
 	private int mySFX_Footsteps_Last = 1;
 
 	[SerializeField] AudioClip mySFX_HitWall;
+	private bool isDead = false;
 
-	private bool isEnd = false;
+	[SerializeField] GameObject myBox;
+	[SerializeField] AudioClip mySFX_Win;
+	[SerializeField] AudioClip mySFX_Lose;
+	private AudioClip mySFX_EndSound;
+	private bool canRestart = false;
+
 
 	// Use this for initialization
 	void Start () {
@@ -64,7 +70,12 @@ public class CS_Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (isEnd)
+		if (canRestart) {
+			if (Input.GetButtonDown ("Move") || Input.GetButtonDown ("Send")) {
+				UnityEngine.SceneManagement.SceneManager.LoadScene ("Play");
+			}
+		}
+		if (isDead)
 			return;
 		
 		UpdateSend ();
@@ -73,7 +84,7 @@ public class CS_Player : MonoBehaviour {
 	}
 
 	void LateUpdate () {
-		if (isEnd)
+		if (isDead)
 			return;
 		UpdateStep ();
 	}
@@ -226,7 +237,23 @@ public class CS_Player : MonoBehaviour {
 		}
 	}
 
-	public void SetIsEnd () {
-		isEnd = true;
+	public void Win () {
+		this.transform.position = myBox.transform.position + Vector3.up;
+		mySFX_EndSound = mySFX_Win;
+		Invoke ("SetRestart", 5);
+	}
+
+	public void Lose () {
+		isDead = true;
+		this.transform.position = myBox.transform.position + Vector3.up;
+		mySFX_EndSound = mySFX_Lose;
+		Invoke ("SetRestart", 5);
+	}
+
+	private void SetRestart () {
+		if (canRestart == false) {
+			canRestart = true;
+			CS_AudioManager.Instance.PlaySFX (mySFX_EndSound, Vector3.zero, this.transform);
+		}
 	}
 }

@@ -47,7 +47,6 @@ public class CS_Ghost : MonoBehaviour {
 	private Vector3 myFindPoint;
 
 	[SerializeField] AudioClip mySFX_Lose;
-	[SerializeField] GameObject myBox;
 
 
 //	[SerializeField] AudioClip mySFX;
@@ -119,9 +118,7 @@ public class CS_Ghost : MonoBehaviour {
 			myStatus = Status.End;
 			CS_AudioManager.Instance.PlaySFX (mySFX_Lose, Vector3.zero, g_Collider.transform);
 
-			g_Collider.transform.position = myBox.transform.position + Vector3.up;
-
-			CS_Player.Instance.SetIsEnd ();
+			CS_Player.Instance.Lose ();
 		}
 	}
 
