@@ -45,8 +45,7 @@ public class CS_Player : MonoBehaviour {
 	[SerializeField] Rigidbody myRigidbody;
 
 	[SerializeField] AudioSource mySFXAudioSource;
-	[SerializeField] float myFoodstepRatio = 0.5f;
-	private float myFoodstepDistance;
+	[SerializeField] float myFoodstepDistance = 1;
 	private float  myFoodstepCycle;
 	private Vector3 myLastPosition;
 	[SerializeField] AudioClip[] mySFX_Footsteps;
@@ -55,20 +54,27 @@ public class CS_Player : MonoBehaviour {
 
 	[SerializeField] AudioClip mySFX_HitWall;
 
+	private bool isEnd = false;
+
 	// Use this for initialization
 	void Start () {
 		myLastPosition = this.transform.position;
-		myFoodstepDistance = mySpeed * myFoodstepRatio;
+		Debug.Log (myFoodstepDistance);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (isEnd)
+			return;
+		
 		UpdateSend ();
 		UpdateMove ();
 
 	}
 
 	void LateUpdate () {
+		if (isEnd)
+			return;
 		UpdateStep ();
 	}
 
@@ -97,7 +103,7 @@ public class CS_Player : MonoBehaviour {
 		myFoodstepCycle += t_distance;
 //		Debug.Log (myFoodstepCycle);
 		if (myFoodstepCycle > myFoodstepDistance) {
-			myFoodstepCycle -= myFoodstepDistance;
+			myFoodstepCycle = 0;
 
 			//Play the sound
 
@@ -134,12 +140,16 @@ public class CS_Player : MonoBehaviour {
 			Debug.Log ("Move");
 			Vector3 t_direction = myCameraTransform.forward;
 			t_direction = new Vector3 (t_direction.x, 0, t_direction.z).normalized;
-//			myRigidbody.velocity = new Vector3 (t_direction.x, myRigidbody.velocity.y, t_direction.z) * mySpeed * Time.deltaTime;
-			this.transform.position += t_direction * mySpeed * Time.deltaTime;
+//			Debug.Log (t_direction);
+			myRigidbody.velocity = new Vector3 (t_direction.x, myRigidbody.velocity.y, t_direction.z) * mySpeed * Time.deltaTime;
+//			Debug.Log (myRigidbody.velocity);
+//			this.transform.position += t_direction * mySpeed * Time.deltaTime;
 
+		} else {
+			myRigidbody.velocity = Vector3.zero;
 		}
 
-		myRigidbody.velocity = Vector3.zero;
+//		myRigidbody.velocity = Vector3.zero;
 	}
 
 	private void UpdateSend () {
@@ -214,5 +224,9 @@ public class CS_Player : MonoBehaviour {
 		if (collision.gameObject.tag == "Wall") {
 			HitWall ();
 		}
+	}
+
+	public void SetIsEnd () {
+		isEnd = true;
 	}
 }

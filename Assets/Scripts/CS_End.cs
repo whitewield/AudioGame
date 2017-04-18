@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CS_End : MonoBehaviour {
 	[SerializeField] AudioClip mySFX;
+	[SerializeField] GameObject myBox;
 
 	// Use this for initialization
 	void Start () {
@@ -20,6 +21,8 @@ public class CS_End : MonoBehaviour {
 			Debug.Log ("WIN!");
 			CS_AudioManager.Instance.PlaySFX (mySFX, this.transform.position);
 			CS_Ghost.Instance.End ();
+
+			g_Collider.transform.position = myBox.transform.position + Vector3.up;
 		}
 	}
 }
