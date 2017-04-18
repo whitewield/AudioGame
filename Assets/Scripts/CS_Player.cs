@@ -65,6 +65,7 @@ public class CS_Player : MonoBehaviour {
 	void Update () {
 		UpdateSend ();
 		UpdateMove ();
+
 	}
 
 	void LateUpdate () {
@@ -138,7 +139,7 @@ public class CS_Player : MonoBehaviour {
 
 		}
 
-//		myRigidbody.velocity = Vector3.zero;
+		myRigidbody.velocity = Vector3.zero;
 	}
 
 	private void UpdateSend () {
