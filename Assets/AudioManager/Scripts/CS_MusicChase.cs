@@ -25,7 +25,7 @@ public class CS_MusicChase : MonoBehaviour {
 
 		distance = (player.transform.position - ghost.transform.position).sqrMagnitude; 
 
-		thisSource.volume = CS_AudioManager.Instance.RemapRange (distance, 0f, 250f, 1.0f, 0f);
+		thisSource.volume = CS_AudioManager.Instance.RemapRange (distance, 0f, 900f, 1.0f, 0f);
 		
 	}
 }
